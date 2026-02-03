@@ -23,9 +23,10 @@ public class BareAPI {
 
 	private String API_SITE;
 	private String API_KEY;
+	private String API_VERSION = "";
 	private boolean resize;
 	private int responseDelay = 800;
-
+	
 	/**
 	 * Инициализация Bare API
 	 * @return Возвращает true, если инициализация успешна
@@ -47,13 +48,34 @@ public class BareAPI {
 		reader.close();
 		return isInited;
 	}
-
+	
 	/**
 	 * Метод позволяющий установить ключ Bare API
 	 * @param apiKey Ключ для Bare API
 	 */
 	public void setKey(String apiKey) {
 		this.API_KEY = apiKey;
+	}
+	
+	/**
+	 * Установить версию API, например V2, V3, V4 и др.
+	 * @param prefix
+	 */
+	public void setVersion(String prefix) {
+		if(prefix.equalsIgnoreCase("v1")) {
+			this.API_VERSION = "";
+			return;
+		}
+		
+		this.API_VERSION = prefix + "_";
+	}
+	
+	/**
+	 * Получить версию API
+	 * @return Возвращает версию API
+	 */
+	public String getVersion() {
+		return this.API_VERSION.contains("_") ? this.API_VERSION.replace("_", "") : "V1";
 	}
 	
 	/**
@@ -113,6 +135,14 @@ public class BareAPI {
 	}
 	
 	/**
+	 * Получить полный ключ (С версией API)
+	 * @return
+	 */
+	public String getFullKey() {
+		return this.API_VERSION + this.API_KEY;
+	}
+	
+	/**
 	 * Метод для решения капчи из BufferedImage. Будет работать
 	 * только если Bare API инициализирован при помощи initBareAPI().
 	 * @param captchaImage Входяшее BufferedImage капчи
@@ -129,7 +159,7 @@ public class BareAPI {
 			inputImage = BareImageUtils.resizeImage(inputImage);
 		}
 		
-		String postData = "key=" + URLEncoder.encode(this.API_KEY, "UTF-8") + "&method=base64" + "&body=" + URLEncoder.encode(BareImageUtils.imageToBase64(captchaImage), "UTF-8");
+		String postData = "key=" + URLEncoder.encode(this.getFullKey(), "UTF-8") + "&method=base64" + "&body=" + URLEncoder.encode(BareImageUtils.imageToBase64(captchaImage), "UTF-8");
 		String postResponse = sendPost(this.API_SITE + "in.php", postData);
 		
 		Thread.sleep(this.responseDelay);
@@ -141,7 +171,7 @@ public class BareAPI {
 			return "CAPCHA_NO_READY";
 		}
 
-		String getUrl = this.API_SITE + "res.php?" + "key=" + URLEncoder.encode(this.API_KEY, "UTF-8") + "&action=get" + "&id=" + URLEncoder.encode(captchaId, "UTF-8");
+		String getUrl = this.API_SITE + "res.php?" + "key=" + URLEncoder.encode(this.getFullKey(), "UTF-8") + "&action=get" + "&id=" + URLEncoder.encode(captchaId, "UTF-8");
 		String getResponse = sendGet(getUrl);
 		String answer;
 		
