@@ -49,6 +49,16 @@ public class BareAPI {
 		return isInited;
 	}
 	
+	
+	/**
+	 * Установка хоста вручную, не используя initBareAPI
+	 * Например http://5.42.211.111:80/
+	 * @param host - Устанавливаемый хост
+	 */
+	public void setHost(String host) {
+		this.API_SITE = host;
+	}
+	
 	/**
 	 * Метод позволяющий установить ключ Bare API
 	 * @param apiKey Ключ для Bare API
