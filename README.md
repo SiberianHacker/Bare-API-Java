@@ -5,7 +5,7 @@ Java библиотека для работы с Bare API ( https://bareapi.shop
 ```java
 BareAPI api = new BareAPI();
 
-// 1. Инициализация (обязательно)
+// 1. Инициализация (обязательно, если не используем api.setHost("http://samplehost:80/"))
 api.initBareAPI();
 
 // 2. Установка ключа (обязательно)
